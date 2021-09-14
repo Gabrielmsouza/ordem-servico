@@ -1,9 +1,13 @@
 package com.gabriel.ordemservico.services;
 
 import com.gabriel.ordemservico.domain.Cliente;
+import com.gabriel.ordemservico.domain.Pessoa;
 import com.gabriel.ordemservico.repositories.ClienteRepository;
+import com.gabriel.ordemservico.repositories.PessoaRepository;
+import com.gabriel.ordemservico.utils.Mensagem;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,13 +19,20 @@ public class ClienteService {
     @Autowired
     ClienteRepository repository;
 
+    @Autowired
+    PessoaRepository pessoaRepository;
+
     public Cliente create(Cliente obj) {
+        if (findByCpf(obj) != null) {
+            throw new DataIntegrityViolationException(Mensagem.CPF_JA_CADASTRADO);
+        }
+
         return repository.save(obj);
     }
 
     public Cliente findById(Integer id) {
         Optional<Cliente> obj = repository.findById(id);
-        return obj.orElseThrow(() -> new ObjectNotFoundException(0,"Cliente não encontrado!"));
+        return obj.orElseThrow(() -> new ObjectNotFoundException(0,Mensagem.CLIENTE_NAO_ENCONTRADO));
     }
 
     public List<Cliente> findAll() {
@@ -36,5 +47,11 @@ public class ClienteService {
     public void delete(Integer id) {
         findById(id);
         repository.deleteById(id);
+    }
+
+    public Pessoa findByCpf(Cliente obj){
+        Pessoa pessoa = pessoaRepository.findByCPF(obj.getCpf());
+        if (pessoa != null) return pessoa;
+        return null;
     }
 }
