@@ -16,7 +16,7 @@ public class ClienteController {
     ClienteService service;
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Cliente> findById(@RequestParam Integer id){
+    public ResponseEntity<Cliente> findById(@PathVariable Integer id){
         return ResponseEntity.ok().body(service.findById(id));
     }
 
@@ -36,7 +36,7 @@ public class ClienteController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> delete(@RequestParam Integer id){
+    public ResponseEntity<Void> delete(@PathVariable Integer id){
         service.delete(id);
         return ResponseEntity.noContent().build();
     }

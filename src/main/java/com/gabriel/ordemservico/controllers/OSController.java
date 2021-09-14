@@ -23,7 +23,7 @@ public class OSController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<OS> findById(@RequestParam Integer id){
+    public ResponseEntity<OS> findById(@PathVariable Integer id){
         return ResponseEntity.ok().body(service.findById(id));
     }
 
@@ -38,7 +38,7 @@ public class OSController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> delete(@RequestParam Integer id){
+    public ResponseEntity<Void> delete(@PathVariable Integer id){
         service.delete(id);
         return ResponseEntity.noContent().build();
     }

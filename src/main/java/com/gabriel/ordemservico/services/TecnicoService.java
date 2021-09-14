@@ -4,8 +4,9 @@ import com.gabriel.ordemservico.domain.Pessoa;
 import com.gabriel.ordemservico.domain.Tecnico;
 import com.gabriel.ordemservico.repositories.PessoaRepository;
 import com.gabriel.ordemservico.repositories.TecnicoRepository;
+import com.gabriel.ordemservico.services.exceptions.DataIntegrityException;
+import com.gabriel.ordemservico.services.exceptions.ObjectNotFoundException;
 import com.gabriel.ordemservico.utils.Mensagem;
-import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class TecnicoService {
 
     public Tecnico findById(Integer id) {
         Optional<Tecnico> optional = repository.findById(id);
-        return optional.orElseThrow(() -> new ObjectNotFoundException(0,Mensagem.TECNICO_NAO_ENCONTRADO));
+        return optional.orElseThrow(() -> new ObjectNotFoundException(Mensagem.TECNICO_NAO_ENCONTRADO));
     }
 
     public List<Tecnico> findAll() {
@@ -32,7 +33,7 @@ public class TecnicoService {
 
     public Tecnico create(Tecnico obj) {
         if (findByCpf(obj) != null){
-            throw new DataIntegrityViolationException(Mensagem.CPF_JA_CADASTRADO);
+            throw new DataIntegrityException(Mensagem.CPF_JA_CADASTRADO(obj.getCpf()));
         }
 
         return repository.save(obj);
@@ -40,6 +41,12 @@ public class TecnicoService {
 
     public Tecnico update(Tecnico obj) {
         findById(obj.getId());
+
+        Pessoa pessoa = findByCpf(obj);
+        if (pessoa != null && !pessoa.getId().equals(obj.getId())){
+            throw new DataIntegrityException(Mensagem.CPF_JA_CADASTRADO(obj.getCpf()));
+        }
+
         return repository.save(obj);
     }
 

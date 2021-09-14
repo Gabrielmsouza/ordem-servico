@@ -7,7 +7,8 @@ import com.gabriel.ordemservico.domain.enums.Prioridade;
 import com.gabriel.ordemservico.domain.enums.Status;
 import com.gabriel.ordemservico.dtos.OSDto;
 import com.gabriel.ordemservico.repositories.OSRepository;
-import org.hibernate.ObjectNotFoundException;
+import com.gabriel.ordemservico.services.exceptions.ObjectNotFoundException;
+import com.gabriel.ordemservico.utils.Mensagem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +33,7 @@ public class OSService {
 
     public OS findById(Integer id) {
         Optional<OS> obj = repository.findById(id);
-        return obj.orElseThrow(() -> new ObjectNotFoundException(0,"OS não localizada!"));
+        return obj.orElseThrow(() -> new ObjectNotFoundException(Mensagem.OS_NAO_ENCONTRADO));
     }
 
     public OS create(OSDto obj) {
