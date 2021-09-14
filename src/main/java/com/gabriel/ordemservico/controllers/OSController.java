@@ -1,6 +1,5 @@
 package com.gabriel.ordemservico.controllers;
 
-import com.gabriel.ordemservico.domain.Cliente;
 import com.gabriel.ordemservico.domain.OS;
 import com.gabriel.ordemservico.dtos.OSDto;
 import com.gabriel.ordemservico.services.OSService;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping(value = "/os")
 public class OSController {
