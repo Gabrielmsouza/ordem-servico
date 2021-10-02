@@ -8,8 +8,8 @@ import com.gabriel.ordemservico.services.exceptions.DataIntegrityException;
 import com.gabriel.ordemservico.services.exceptions.ObjectNotFoundException;
 import com.gabriel.ordemservico.utils.Mensagem;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +21,9 @@ public class TecnicoService {
 
     @Autowired
     PessoaRepository pessoaRepository;
+
+    @Autowired
+    OSService osService;
 
     public Tecnico findById(Integer id) {
         Optional<Tecnico> optional = repository.findById(id);
@@ -51,7 +54,10 @@ public class TecnicoService {
     }
 
     public void delete(Integer id) {
-        findById(id);
+        Tecnico obj = findById(id);
+        if (obj.getListaOS().size() > 0){
+            throw new DataIntegrityException(Mensagem.TECNICO_COM_OS_NOTDELETE);
+        }
         repository.deleteById(id);
     }
 

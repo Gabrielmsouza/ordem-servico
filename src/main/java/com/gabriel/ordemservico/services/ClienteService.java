@@ -8,7 +8,6 @@ import com.gabriel.ordemservico.services.exceptions.DataIntegrityException;
 import com.gabriel.ordemservico.services.exceptions.ObjectNotFoundException;
 import com.gabriel.ordemservico.utils.Mensagem;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,7 +51,11 @@ public class ClienteService {
     }
 
     public void delete(Integer id) {
-        findById(id);
+        Cliente obj = findById(id);
+
+        if (obj.getListaOs().size() > 0){
+            throw new DataIntegrityException(Mensagem.CLIENTE_COM_OS_NOTDELETE);
+        }
         repository.deleteById(id);
     }
 
